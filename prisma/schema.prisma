@@ -14,19 +14,28 @@ enum UserRole {
   CUSTOMER       @map("customer")
 }
 
+enum MessageRole {
+  USER
+  AGENT
+}
+
+enum AiModelName {
+  GPT
+  CLAUDE_HAIKU
+}
+
+enum ConversationType {
+  GLOBAL
+  SALES_BOT
+  SERVICE_GUIDE
+  ALTERNATIVE_GUIDE
+}
+
 enum OAuthProvider {
   email
   google
   facebook
   apple
-}
-
-enum OrderStatus {
-  pending
-  paid
-  failed
-  refunded
-  cancelled
 }
 
 model User {
@@ -45,4 +54,91 @@ model User {
   forgotPasswordStatus Boolean       @default(false)
 
   @@index([role])
+  conversations        Conversation[]
+  messages             Message[]
+  agentTrainings       AgentTraining[]
+  salesBots            SalesBot[]
+  serviceGuides        ServiceGuide[]
+  alternativeGuides    AlternativeGuide[]
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  name      String
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      ConversationType @default(GLOBAL)
+  aiModel   AiModelName @default(GPT)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? 
+  messages  Message[]
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           MessageRole  @default(USER)
+  userQuery      String
+  rowAiResponse  String?
+  documentUrl    String?
+  documentPath   String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime? 
+}
+
+model AgentTraining {
+  id           String      @id @default(uuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentUrl  String?
+  documentPath String?
+  prompt       String
+  modelName    AiModelName @default(GPT)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
+}
+
+model SalesBot {
+  id           String      @id @default(uuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentUrl  String?
+  documentPath String?
+  prompt       String
+  modelName    AiModelName @default(GPT)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
+}
+
+model ServiceGuide {
+  id           String      @id @default(uuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentUrl  String?
+  documentPath String?
+  prompt       String
+  modelName    AiModelName @default(GPT)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
+}
+
+model AlternativeGuide {
+  id           String      @id @default(uuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentUrl  String?
+  documentPath String?
+  prompt       String
+  modelName    AiModelName @default(GPT)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
 }

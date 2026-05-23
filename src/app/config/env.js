@@ -54,6 +54,9 @@ const loadEnvVars = () => {
     GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
     // Frontend
     FRONT_END_URL: process.env.FRONT_END_URL,
+    
+    // AI API
+    AI_API: process.env.AI_API,
   };
 };
 
