@@ -6,7 +6,7 @@ const createConversationSchema = z.object({
       required_error: "Conversation name is required",
     }),
     type: z.enum(["GLOBAL", "SALES_BOT", "SERVICE_GUIDE", "ALTERNATIVE_GUIDE"]).optional().default("GLOBAL"),
-    aiModel: z.enum(["GPT", "CLAUDE_HAIKU"]).optional().default("GPT"),
+    aiModel: z.enum(["GPT", "CLAUDE_HAIKU", "SONNET"]).optional().default("GPT"),
   }),
 });
 
@@ -14,7 +14,7 @@ const updateConversationSchema = z.object({
   body: z.object({
     name: z.string().optional(),
     type: z.enum(["GLOBAL", "SALES_BOT", "SERVICE_GUIDE", "ALTERNATIVE_GUIDE"]).optional(),
-    aiModel: z.enum(["GPT", "CLAUDE_HAIKU"]).optional(),
+    aiModel: z.enum(["GPT", "CLAUDE_HAIKU", "SONNET"]).optional(),
   }),
 });
 

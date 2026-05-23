@@ -22,6 +22,7 @@ enum MessageRole {
 enum AiModelName {
   GPT
   CLAUDE_HAIKU
+  SONNET
 }
 
 enum ConversationType {

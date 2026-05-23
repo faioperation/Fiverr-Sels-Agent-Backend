@@ -1,8 +1,8 @@
 import { StatusCodes } from "http-status-codes";
-import { sendResponse } from "../../../utils/sendResponse.js";
-import prisma from "../../../prisma/client.js";
+import { sendResponse } from "../../utils/sendResponse.js";
+import prisma from "../../prisma/client.js";
 import { AgentTrainingService } from "./agentTraining.service.js";
-import DevBuildError from "../../../lib/DevBuildError.js";
+import DevBuildError from "../../lib/DevBuildError.js";
 
 const createAgentTraining = async (req, res, next) => {
   try {
@@ -14,30 +14,18 @@ const createAgentTraining = async (req, res, next) => {
       documentUrl = `${req.protocol}://${req.get('host')}/${documentPath}`;
     }
 
-    let result;
-    const existing = await AgentTrainingService.findFirstByUserId(prisma, userId);
-
-    if (existing) {
-      result = await AgentTrainingService.update(prisma, existing.id, userId, {
-        prompt,
-        modelName,
-        documentUrl,
-        documentPath,
-      });
-    } else {
-      result = await AgentTrainingService.create(prisma, {
-        userId,
-        prompt,
-        modelName,
-        documentUrl,
-        documentPath,
-      });
-    }
+    const result = await AgentTrainingService.create(prisma, {
+      userId,
+      prompt,
+      modelName,
+      documentUrl,
+      documentPath,
+    });
 
     sendResponse(res, {
       success: true,
-      message: existing ? "Agent training data updated successfully" : "Agent training data created successfully",
-      statusCode: existing ? StatusCodes.OK : StatusCodes.CREATED,
+      message: "Agent training data created successfully",
+      statusCode: StatusCodes.CREATED,
       data: result,
     });
   } catch (error) {
