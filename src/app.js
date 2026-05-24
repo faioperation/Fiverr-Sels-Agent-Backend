@@ -17,7 +17,7 @@ const app = express();
 
 // Global middlewares
 app.use(cors({
-  origin: ["http://localhost:3000"],
+  origin: ["https://fai-sales-agent.vercel.app","http://localhost:3000"],
   credentials: true,
 }));
 app.use(cookieParser());
