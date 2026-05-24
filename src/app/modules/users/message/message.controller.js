@@ -16,10 +16,22 @@ const createMessage = async (req, res, next) => {
       documentUrl = `${req.protocol}://${req.get('host')}/${documentPath}`;
     }
 
-    // Verify conversation belongs to user
-    const conversation = await ConversationService.findById(prisma, conversationId, userId);
-    if (!conversation) {
-      throw new DevBuildError("Conversation not found", StatusCodes.NOT_FOUND);
+    let conversation;
+    if (conversationId) {
+      // Verify conversation belongs to user
+      conversation = await ConversationService.findById(prisma, conversationId, userId);
+      if (!conversation) {
+        throw new DevBuildError("Conversation not found", StatusCodes.NOT_FOUND);
+      }
+    } else {
+      // Create a new conversation if not provided
+      conversation = await ConversationService.create(prisma, {
+        userId,
+        name: req.body.name || "New Conversation",
+        type: req.body.type || "GLOBAL",
+        aiModel: req.body.aiModel || "GPT",
+      });
+      conversationId = conversation.id;
     }
 
     const result = await MessageService.create(prisma, {

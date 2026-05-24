@@ -11,7 +11,7 @@ const createConversation = async (req, res, next) => {
 
     const result = await ConversationService.create(prisma, {
       userId,
-      name,
+      name: name || "New Conversation",
       type: type || "GLOBAL",
       aiModel: aiModel || "GPT",
     });
