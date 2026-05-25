@@ -7,10 +7,11 @@ import DevBuildError from "../../../lib/DevBuildError.js";
 const createConversation = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { name, type, aiModel } = req.body;
+    const { name, type, aiModel, categoryId } = req.body;
 
     const result = await ConversationService.create(prisma, {
       userId,
+      categoryId,
       name: name || "New Conversation",
       type: type || "GLOBAL",
       aiModel: aiModel || "GPT",
@@ -70,7 +71,7 @@ const updateConversation = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { id } = req.params;
-    const { name, type, aiModel } = req.body;
+    const { name, type, aiModel, categoryId } = req.body;
 
     // Check if it exists and belongs to the user
     const existing = await ConversationService.findById(prisma, id, userId);
@@ -82,6 +83,7 @@ const updateConversation = async (req, res, next) => {
       name,
       type,
       aiModel,
+      categoryId,
     });
 
     sendResponse(res, {

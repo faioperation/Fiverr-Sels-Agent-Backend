@@ -11,6 +11,7 @@ import { SalesBotRoutes } from "../modules/users/salesBot/salesBot.route.js";
 import { ServiceGuideRoutes } from "../modules/users/serviceGuide/serviceGuide.route.js";
 import { AlternativeGuideRoutes } from "../modules/users/alternativeGuide/alternativeGuide.route.js";
 import { AddUserRoutes } from "../modules/add-user/addUser.route.js";
+import { CategoryRoutes } from "../modules/category/category.route.js";
 
 
 
@@ -63,6 +64,10 @@ const moduleRoutes = [
   {
     path: "/admin/add-user",
     route: AddUserRoutes,
+  },
+  {
+    path: "/category",
+    route: CategoryRoutes,
   }
 ];
 
