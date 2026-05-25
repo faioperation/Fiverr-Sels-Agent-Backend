@@ -3,6 +3,7 @@ import { z } from "zod";
 const createMessageSchema = z.object({
   body: z.object({
     conversationId: z.string().optional(),
+    categoryId: z.string().optional(),
     userQuery: z.string({
       required_error: "User query is required",
     }),

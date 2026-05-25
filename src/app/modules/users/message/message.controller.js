@@ -12,7 +12,7 @@ import { envVars } from "../../../config/env.js";
 const createMessage = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    let { conversationId, userQuery, documentUrl, documentPath, role, rowAiResponse } = req.body;
+    let { conversationId, categoryId, userQuery, documentUrl, documentPath, role, rowAiResponse } = req.body;
 
     if (req.file) {
       documentPath = `uploads/${req.file.filename}`;
@@ -44,11 +44,16 @@ const createMessage = async (req, res, next) => {
       }
 
       // Create a new conversation if not provided
+      if (!categoryId) {
+        throw new DevBuildError("Category ID is required to start a new conversation", StatusCodes.BAD_REQUEST);
+      }
+      
       conversation = await ConversationService.create(prisma, {
         userId,
         name: req.body.name || "New Conversation",
         type: type,
         aiModel: aiModel,
+        categoryId,
       });
       conversationId = conversation.id;
     }
