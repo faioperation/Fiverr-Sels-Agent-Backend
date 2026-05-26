@@ -11,6 +11,9 @@ export const AgentTrainingService = {
         userId,
         deletedAt: null,
       },
+      include: {
+        category: true,
+      },
     });
   },
 
@@ -19,6 +22,9 @@ export const AgentTrainingService = {
       where: {
         userId,
         deletedAt: null,
+      },
+      include: {
+        category: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -32,6 +38,9 @@ export const AgentTrainingService = {
         id,
         userId,
         deletedAt: null,
+      },
+      include: {
+        category: true,
       },
     });
   },

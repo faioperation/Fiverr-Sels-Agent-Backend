@@ -106,6 +106,8 @@ model AgentTraining {
   id           String      @id @default(uuid())
   userId       String
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId   String
+  category     Category    @relation(fields: [categoryId], references: [id])
   documentUrl  String?
   documentPath String?
   prompt       String
@@ -163,5 +165,6 @@ model Category {
   updatedAt DateTime     @updatedAt
   deletedAt DateTime?
 
-  conversations Conversation[]
+  conversations  Conversation[]
+  agentTrainings AgentTraining[]
 }

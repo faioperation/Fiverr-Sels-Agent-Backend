@@ -7,7 +7,7 @@ import DevBuildError from "../../lib/DevBuildError.js";
 const createAgentTraining = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    let { prompt, modelName, documentUrl, documentPath } = req.body;
+    let { prompt, modelName, documentUrl, documentPath, categoryId } = req.body;
 
     if (req.file) {
       documentPath = `uploads/${req.file.filename}`;
@@ -16,6 +16,7 @@ const createAgentTraining = async (req, res, next) => {
 
     const result = await AgentTrainingService.create(prisma, {
       userId,
+      categoryId,
       prompt,
       modelName,
       documentUrl,
@@ -75,7 +76,7 @@ const updateAgentTraining = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { id } = req.params;
-    let { prompt, modelName, documentUrl, documentPath } = req.body;
+    let { prompt, modelName, documentUrl, documentPath, categoryId } = req.body;
 
     if (req.file) {
       documentPath = `uploads/${req.file.filename}`;
@@ -88,6 +89,7 @@ const updateAgentTraining = async (req, res, next) => {
     }
 
     const result = await AgentTrainingService.update(prisma, id, userId, {
+      categoryId,
       prompt,
       modelName,
       documentUrl,
