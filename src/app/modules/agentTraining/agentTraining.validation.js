@@ -9,8 +9,8 @@ const createAgentTrainingSchema = z.object({
       required_error: "Prompt is required",
     }),
     modelName: z.enum(["GPT", "CLAUDE_HAIKU", "SONNET"]).optional(),
-    documentUrl: z.string().url().optional().or(z.literal("")),
-    documentPath: z.string().optional().or(z.literal("")),
+    documentUrls: z.array(z.string()).optional(),
+    documentPaths: z.array(z.string()).optional(),
   }),
 });
 
@@ -19,8 +19,8 @@ const updateAgentTrainingSchema = z.object({
     categoryId: z.string().optional(),
     prompt: z.string().optional(),
     modelName: z.enum(["GPT", "CLAUDE_HAIKU", "SONNET"]).optional(),
-    documentUrl: z.string().url().optional().or(z.literal("")),
-    documentPath: z.string().optional().or(z.literal("")),
+    documentUrls: z.array(z.string()).optional(),
+    documentPaths: z.array(z.string()).optional(),
   }),
 });
 

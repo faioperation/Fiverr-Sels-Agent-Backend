@@ -103,18 +103,18 @@ model Message {
 }
 
 model AgentTraining {
-  id           String      @id @default(uuid())
-  userId       String
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId   String
-  category     Category    @relation(fields: [categoryId], references: [id])
-  documentUrl  String?
-  documentPath String?
-  prompt       String
-  modelName    AiModelName @default(GPT)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  deletedAt    DateTime?
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId    String
+  category      Category    @relation(fields: [categoryId], references: [id])
+  documentUrls  String[]    @default([])
+  documentPaths String[]    @default([])
+  prompt        String
+  modelName     AiModelName @default(GPT)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?
 }
 
 model SalesBot {

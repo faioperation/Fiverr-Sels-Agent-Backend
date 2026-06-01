@@ -14,7 +14,7 @@ router.use(checkAuthMiddleware(Role.SYSTEM_OWNER));
 
 router.post(
   "/",
-  upload.single("document"),
+  upload.array("documents"),
   validateRequest(AgentTrainingValidation.createAgentTrainingSchema),
   AgentTrainingController.createAgentTraining
 );
@@ -31,7 +31,7 @@ router.get(
 
 router.patch(
   "/:id",
-  upload.single("document"),
+  upload.array("documents"),
   validateRequest(AgentTrainingValidation.updateAgentTrainingSchema),
   AgentTrainingController.updateAgentTraining
 );

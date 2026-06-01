@@ -7,11 +7,15 @@ import DevBuildError from "../../lib/DevBuildError.js";
 const createAgentTraining = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    let { prompt, modelName, documentUrl, documentPath, categoryId } = req.body;
+    let { prompt, modelName, categoryId, documentUrls = [], documentPaths = [] } = req.body;
 
-    if (req.file) {
-      documentPath = `uploads/${req.file.filename}`;
-      documentUrl = `${req.protocol}://${req.get('host')}/${documentPath}`;
+    if (req.files && req.files.length > 0) {
+      req.files.forEach(file => {
+        const docPath = `uploads/${file.filename}`;
+        const docUrl = `${req.protocol}://${req.get('host')}/${docPath}`;
+        documentPaths.push(docPath);
+        documentUrls.push(docUrl);
+      });
     }
 
     const result = await AgentTrainingService.create(prisma, {
@@ -19,8 +23,8 @@ const createAgentTraining = async (req, res, next) => {
       categoryId,
       prompt,
       modelName,
-      documentUrl,
-      documentPath,
+      documentUrls,
+      documentPaths,
     });
 
     sendResponse(res, {
@@ -76,11 +80,34 @@ const updateAgentTraining = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { id } = req.params;
-    let { prompt, modelName, documentUrl, documentPath, categoryId } = req.body;
+    let { prompt, modelName, categoryId, documentUrls, documentPaths } = req.body;
 
-    if (req.file) {
-      documentPath = `uploads/${req.file.filename}`;
-      documentUrl = `${req.protocol}://${req.get('host')}/${documentPath}`;
+    let updateData = {
+      categoryId,
+      prompt,
+      modelName,
+    };
+
+    if (documentUrls !== undefined) {
+      updateData.documentUrls = documentUrls;
+    }
+    if (documentPaths !== undefined) {
+      updateData.documentPaths = documentPaths;
+    }
+
+    if (req.files && req.files.length > 0) {
+      const newDocumentPaths = [];
+      const newDocumentUrls = [];
+      req.files.forEach(file => {
+        const docPath = `uploads/${file.filename}`;
+        const docUrl = `${req.protocol}://${req.get('host')}/${docPath}`;
+        newDocumentPaths.push(docPath);
+        newDocumentUrls.push(docUrl);
+      });
+      // If we are appending to existing ones or just replacing, typically we just append or use whatever the client sends.
+      // If client didn't send existing arrays, we just use the new ones. If they did, we concat.
+      updateData.documentPaths = [...(updateData.documentPaths || []), ...newDocumentPaths];
+      updateData.documentUrls = [...(updateData.documentUrls || []), ...newDocumentUrls];
     }
 
     const existing = await AgentTrainingService.findById(prisma, id, userId);
@@ -88,13 +115,7 @@ const updateAgentTraining = async (req, res, next) => {
       throw new DevBuildError("Agent training data not found", StatusCodes.NOT_FOUND);
     }
 
-    const result = await AgentTrainingService.update(prisma, id, userId, {
-      categoryId,
-      prompt,
-      modelName,
-      documentUrl,
-      documentPath,
-    });
+    const result = await AgentTrainingService.update(prisma, id, userId, updateData);
 
     sendResponse(res, {
       success: true,
