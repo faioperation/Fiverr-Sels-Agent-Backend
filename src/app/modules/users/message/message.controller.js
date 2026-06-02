@@ -8,6 +8,7 @@ import { ServiceGuideService } from "../serviceGuide/serviceGuide.service.js";
 import { AlternativeGuideService } from "../alternativeGuide/alternativeGuide.service.js";
 import DevBuildError from "../../../lib/DevBuildError.js";
 import { envVars } from "../../../config/env.js";
+import axios from "axios";
 
 const createMessage = async (req, res, next) => {
   try {
@@ -77,21 +78,18 @@ const createMessage = async (req, res, next) => {
         else if (conversation.type === "SERVICE_GUIDE") endpoint = "/service-guide";
         else if (conversation.type === "ALTERNATIVE_GUIDE") endpoint = "/alternative-guide";
 
-        const aiResponse = await fetch(`${envVars.AI_API}${endpoint}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_input: userQuery,
-            document_content: documentUrl || "",
-            conversation_id: conversationId,
-            ai_model: conversation.aiModel,
-          }),
+        const aiResponse = await axios.post(`${envVars.AI_API}${endpoint}`, {
+          user_input: userQuery,
+          document_content: documentUrl || "",
+          conversation_id: conversationId,
+          ai_model: conversation.aiModel,
+        }, {
+          timeout: 0, // No timeout
+          validateStatus: () => true // Resolve for all status codes, like fetch
         });
 
-        if (aiResponse.ok) {
-          aiResponseData = await aiResponse.json();
+        if (aiResponse.status >= 200 && aiResponse.status < 300) {
+          aiResponseData = aiResponse.data;
           
           // Save AI response to DB as an AGENT message
           agentMessage = await MessageService.create(prisma, {
