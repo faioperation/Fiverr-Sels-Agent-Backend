@@ -17,7 +17,8 @@ const createMessage = async (req, res, next) => {
 
     if (req.file) {
       documentPath = `uploads/${req.file.filename}`;
-      documentUrl = `${req.protocol}://${req.get('host')}/${documentPath}`;
+      const baseUrl = envVars.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
+      documentUrl = `${baseUrl}/${documentPath}`;
     }
 
     let conversation;
@@ -108,10 +109,10 @@ const createMessage = async (req, res, next) => {
             // Leave as string if parsing fails
           }
         } else {
-          console.error("AI API Error:", aiResponse.statusText);
+          console.error("AI API Error:", aiResponse.status, aiResponse.statusText, typeof aiResponse.data === 'object' ? JSON.stringify(aiResponse.data) : aiResponse.data);
         }
       } catch (err) {
-        console.error("Failed to call AI API:", err);
+        console.error("Failed to call AI API:", err.message, err.response?.data);
       }
     }
 
