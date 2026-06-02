@@ -75,9 +75,6 @@ const createMessage = async (req, res, next) => {
     if (envVars.AI_API) {
       try {
         let endpoint = "/full-analysis";
-        if (conversation.type === "SALES_BOT") endpoint = "/sales-bot";
-        else if (conversation.type === "SERVICE_GUIDE") endpoint = "/service-guide";
-        else if (conversation.type === "ALTERNATIVE_GUIDE") endpoint = "/alternative-guide";
 
         const aiResponse = await axios.post(`${envVars.AI_API}${endpoint}`, {
           user_input: userQuery,
