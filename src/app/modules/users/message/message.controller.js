@@ -85,7 +85,7 @@ const createMessage = async (req, res, next) => {
           conversation_id: conversationId,
           ai_model: conversation.aiModel,
         }, {
-          timeout: 60000, // 60 seconds timeout
+          timeout: 180000, // 3 minutes timeout
           validateStatus: () => true // Resolve for all status codes, like fetch
         });
 
