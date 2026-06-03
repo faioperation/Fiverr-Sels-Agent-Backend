@@ -3,9 +3,7 @@ import { sendResponse } from "../../../utils/sendResponse.js";
 import prisma from "../../../prisma/client.js";
 import { MessageService } from "./message.service.js";
 import { ConversationService } from "../conversation/conversation.service.js";
-import { SalesBotService } from "../salesBot/salesBot.service.js";
-import { ServiceGuideService } from "../serviceGuide/serviceGuide.service.js";
-import { AlternativeGuideService } from "../alternativeGuide/alternativeGuide.service.js";
+
 import DevBuildError from "../../../lib/DevBuildError.js";
 import { envVars } from "../../../config/env.js";
 import axios from "axios";
@@ -32,18 +30,6 @@ const createMessage = async (req, res, next) => {
       let type = req.body.type || "GLOBAL";
       let aiModel = req.body.aiModel || "GPT";
 
-      if (!req.body.aiModel) {
-        if (type === "SALES_BOT") {
-          const botConfig = await SalesBotService.findFirstByUserId(prisma, userId);
-          if (botConfig && botConfig.modelName) aiModel = botConfig.modelName;
-        } else if (type === "SERVICE_GUIDE") {
-          const botConfig = await ServiceGuideService.findFirstByUserId(prisma, userId);
-          if (botConfig && botConfig.modelName) aiModel = botConfig.modelName;
-        } else if (type === "ALTERNATIVE_GUIDE") {
-          const botConfig = await AlternativeGuideService.findFirstByUserId(prisma, userId);
-          if (botConfig && botConfig.modelName) aiModel = botConfig.modelName;
-        }
-      }
 
       // Create a new conversation if not provided
       if (!categoryId) {
@@ -80,7 +66,7 @@ const createMessage = async (req, res, next) => {
           user_input: userQuery,
           document_content: documentUrl || "",
           conversation_id: conversationId,
-          ai_model: conversation.aiModel,
+          model_key: conversation.aiModel,
         }, {
           timeout: 180000, // 3 minutes timeout
           validateStatus: () => true // Resolve for all status codes, like fetch
@@ -107,9 +93,18 @@ const createMessage = async (req, res, next) => {
           }
         } else {
           console.error("AI API Error:", aiResponse.status, aiResponse.statusText, typeof aiResponse.data === 'object' ? JSON.stringify(aiResponse.data) : aiResponse.data);
+          agentMessage = {
+            error: "AI API returned an error",
+            status: aiResponse.status,
+            data: aiResponse.data
+          };
         }
       } catch (err) {
         console.error("Failed to call AI API:", err.message, err.response?.data);
+        agentMessage = {
+          error: "Failed to call AI API",
+          message: err.message
+        };
       }
     }
 

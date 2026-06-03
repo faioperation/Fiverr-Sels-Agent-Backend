@@ -7,9 +7,6 @@ import { ConversationRoutes } from "../modules/users/conversation/conversation.r
 import { MessageRoutes } from "../modules/users/message/message.route.js";
 import { AgentTrainingRoutes } from "../modules/agentTraining/agentTraining.route.js";
 import { PublicApiRoutes } from "../modules/publicApi/publicApi.route.js";
-import { SalesBotRoutes } from "../modules/users/salesBot/salesBot.route.js";
-import { ServiceGuideRoutes } from "../modules/users/serviceGuide/serviceGuide.route.js";
-import { AlternativeGuideRoutes } from "../modules/users/alternativeGuide/alternativeGuide.route.js";
 import { AddUserRoutes } from "../modules/add-user/addUser.route.js";
 import { CategoryRoutes } from "../modules/category/category.route.js";
 
@@ -44,18 +41,6 @@ const moduleRoutes = [
   {
     path: "/agent-training",
     route: AgentTrainingRoutes,
-  },
-  {
-    path: "/sales-bot",
-    route: SalesBotRoutes,
-  },
-  {
-    path: "/service-guide",
-    route: ServiceGuideRoutes,
-  },
-  {
-    path: "/alternative-guide",
-    route: AlternativeGuideRoutes,
   },
   {
     path: "/public",

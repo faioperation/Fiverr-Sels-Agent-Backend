@@ -27,9 +27,6 @@ enum AiModelName {
 
 enum ConversationType {
   GLOBAL
-  SALES_BOT
-  SERVICE_GUIDE
-  ALTERNATIVE_GUIDE
 }
 
 enum OAuthProvider {
@@ -65,9 +62,6 @@ model User {
   conversations        Conversation[]
   messages             Message[]
   agentTrainings       AgentTraining[]
-  salesBots            SalesBot[]
-  serviceGuides        ServiceGuide[]
-  alternativeGuides    AlternativeGuide[]
   createdCategories    Category[]    @relation("UserCreatedCategories")
 }
 
@@ -117,44 +111,6 @@ model AgentTraining {
   deletedAt     DateTime?
 }
 
-model SalesBot {
-  id           String      @id @default(uuid())
-  userId       String
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  documentUrl  String?
-  documentPath String?
-  prompt       String
-  modelName    AiModelName @default(GPT)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  deletedAt    DateTime?
-}
-
-model ServiceGuide {
-  id           String      @id @default(uuid())
-  userId       String
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  documentUrl  String?
-  documentPath String?
-  prompt       String
-  modelName    AiModelName @default(GPT)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  deletedAt    DateTime?
-}
-
-model AlternativeGuide {
-  id           String      @id @default(uuid())
-  userId       String
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  documentUrl  String?
-  documentPath String?
-  prompt       String
-  modelName    AiModelName @default(GPT)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  deletedAt    DateTime?
-}
 
 model Category {
   id        String       @id @default(uuid())
